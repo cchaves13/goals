@@ -508,30 +508,25 @@ var GoalsComponent = /** @class */ (function () {
         this.saturdayGoals = [];
         this.sundayGoals = [];
         this.playerId = "";
-        this.playerId = storage.get("currentPlayer").playerKey;
-        this.testingArray = db.list("/goals", function (ref) { return ref.orderByChild("playerId").equalTo(_this.playerId); });
-        this.testingArray.snapshotChanges().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (changes) {
-            return changes.map(function (c) {
-                return (tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"]({ key: c.payload.key }, c.payload.val()));
+        if (storage.get("currentPlayer")) {
+            this.playerId = storage.get("currentPlayer").playerKey;
+            this.testingArray = db.list("/goals", function (ref) { return ref.orderByChild("playerId").equalTo(_this.playerId); });
+            this.testingArray.snapshotChanges().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (changes) {
+                return changes.map(function (c) {
+                    return (tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"]({ key: c.payload.key }, c.payload.val()));
+                });
+            })).subscribe(function (result) {
+                console.log({ queryResult: result });
+                _this.goalsArray = result;
+                _this.mondayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 1; });
+                _this.tuesdayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 2; });
+                _this.wednesdayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 3; });
+                _this.thursdayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 4; });
+                _this.fridayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 5; });
+                _this.saturdayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 6; });
+                _this.sundayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 7; });
             });
-        })).subscribe(function (result) {
-            console.log({ queryResult: result });
-            _this.goalsArray = result;
-            _this.mondayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 1; });
-            _this.tuesdayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 2; });
-            _this.wednesdayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 3; });
-            _this.thursdayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 4; });
-            _this.fridayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 5; });
-            _this.saturdayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 6; });
-            _this.sundayGoals = _this.goalsArray.filter(function (x) { return x.dayOfWeek == 7; });
-            // this.mondayGoals = this.goalsArray.filter(x=> x.weekdays.some((element)=> element.dayNumber == 1));
-            // this.tuesdayGoals = this.goalsArray.filter(x=> x.weekdays.some((element)=> element.dayNumber == 2));
-            // this.wednesdayGoals = this.goalsArray.filter(x=> x.weekdays.some((element)=> element.dayNumber == 3));
-            // this.thursdayGoals = this.goalsArray.filter(x=> x.weekdays.some((element)=> element.dayNumber == 4));
-            // this.fridayGoals = this.goalsArray.filter(x=> x.weekdays.some((element)=> element.dayNumber == 5));
-            // this.saturdayGoals = this.goalsArray.filter(x=> x.weekdays.some((element)=> element.dayNumber == 6));
-            // this.sundayGoals = this.goalsArray.filter(x=> x.weekdays.some((element)=> element.dayNumber == 7));
-        });
+        }
     }
     GoalsComponent.prototype.ngOnInit = function () {
     };
@@ -674,6 +669,7 @@ var RankingComponent = /** @class */ (function () {
                         nickname: playerName,
                         playerKey: snapshot.key
                     });
+                window.location.reload();
             });
         }
         this.playerSaved = true;
